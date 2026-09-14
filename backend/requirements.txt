@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+httpx
+python-dotenv
+passlib
+python-jose[cryptography]>=3.4
+python-multipart

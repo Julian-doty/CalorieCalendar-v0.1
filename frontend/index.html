@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Calorie Calendar</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0172ad">
+    <link rel="apple-touch-icon" href="icons/icon192.png">
+    <!-- config.js sets the backend URL. Deferred scripts run in order, so it's ready before app.js. -->
+    <script src="config.js" defer></script>
+    <script src="js/app.js" defer></script>
+    <script>
+        // Offline support. Service workers only run on http(s) pages, so skip file:// to avoid console errors.
+        if ("serviceWorker" in navigator && location.protocol !== "file:") {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker
+                    .register("service-worker.js")
+                    .then((registration) => console.log("[calorieCalendar] Service worker registered for", registration.scope))
+                    .catch((error) => console.error("[calorieCalendar] Service worker registration failed:", error));
+            });
+        }
+    </script>
+</head>
+<body>
+    <header class="container">
+        <nav>
+            <ul>
+                <li><strong>Calorie Calendar</strong></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <article>
+            <header>
+                <h2>Account</h2>
+            </header>
+            <form id="authForm">
+                <fieldset class="grid">
+                    <label>
+                        Username
+                        <input type="text" id="authUsername" name="username" autocomplete="username" minlength="3" maxlength="50" pattern="[A-Za-z0-9._\-]+" title="3 to 50 letters, numbers, dots, dashes or underscores" required>
+                    </label>
+                    <label>
+                        Password
+                        <input type="password" id="authPassword" name="password" autocomplete="current-password" minlength="6" maxlength="128" required>
+                    </label>
+                    <label>
+                        Email
+                        <input type="email" id="authEmail" name="email" autocomplete="email" maxlength="254" pattern="[^@]+@[^@]+\.[^@]+" title="An email address like name@example.com" aria-describedby="authEmailHelper">
+                        <small id="authEmailHelper">Needed to register. Food searches you make while logged in send it to Open Food Facts as the contact address.</small>
+                    </label>
+                </fieldset>
+                <div class="grid">
+                    <button type="submit" id="loginButton">Log in</button>
+                    <button type="button" id="registerButton" class="secondary">Register</button>
+                </div>
+            </form>
+            <div id="signedInPanel" hidden>
+                <p>Signed in as <strong id="signedInUsername"></strong>.</p>
+                <button type="button" id="logoutButton" class="secondary outline">Log out</button>
+            </div>
+            <p id="authStatus" class="statusMessage" role="status"></p>
+        </article>
+
+        <article>
+            <header>
+                <h2>Search foods</h2>
+            </header>
+            <form id="searchForm">
+                <fieldset class="grid">
+                    <label>
+                        Food name
+                        <input type="search" id="searchFoodName" name="foodName" placeholder="e.g. banana" autocomplete="off" maxlength="100" pattern=".*\S.*" title="Food name can't be blank" required>
+                    </label>
+                    <label>
+                        Amount eaten (g)
+                        <input type="number" id="searchAmount" name="amount" value="100" min="1" max="5000" step="1" inputmode="numeric" aria-describedby="searchAmountHelper" required>
+                        <small id="searchAmountHelper">Used to work out calories when you pick a product.</small>
+                    </label>
+                </fieldset>
+                <button type="submit" id="searchButton">Search</button>
+            </form>
+            <p id="searchStatus" class="statusMessage" role="status"></p>
+            <div id="searchResults" class="overflow-auto" hidden>
+                <table class="striped productTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col">kcal / 100 g</th>
+                            <th scope="col">Protein</th>
+                            <th scope="col">Fat</th>
+                            <th scope="col">Carbs</th>
+                            <th scope="col"><span class="visuallyHidden">Action</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="searchResultsBody"></tbody>
+                </table>
+            </div>
+        </article>
+
+        <article>
+            <header>
+                <h2>Add an entry</h2>
+            </header>
+            <form id="entryForm">
+                <fieldset class="grid">
+                    <label>
+                        Date
+                        <input type="date" id="entryDate" name="date" required>
+                    </label>
+                    <label>
+                        Food item
+                        <input type="text" id="entryFoodItem" name="foodItem" placeholder="e.g. Banana" autocomplete="off" pattern=".*\S.*" title="Food item can't be blank" required>
+                    </label>
+                    <label>
+                        Calories
+                        <input type="number" id="entryCalories" name="calories" placeholder="e.g. 105" min="0" step="1" inputmode="numeric" required>
+                    </label>
+                </fieldset>
+                <!-- Enabled by app.js once saved entries have loaded. -->
+                <button type="submit" id="entrySubmitButton" aria-busy="true" disabled>Loading…</button>
+            </form>
+        </article>
+
+        <section aria-labelledby="entriesHeading">
+            <h2 id="entriesHeading">Entries</h2>
+            <p id="storageStatus" class="statusMessage" role="status">Loading saved entries…</p>
+            <div class="overflow-auto">
+                <table class="striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Food item</th>
+                            <th scope="col">Calories</th>
+                            <th scope="col">Storage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="entriesTableBody">
+                        <tr>
+                            <td colspan="4" aria-busy="true">Loading…</td>
+                        </tr>
+                        <tr id="emptyStateRow" hidden>
+                            <td colspan="4">No entries yet. Add one above.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="container">
+        <small>Calorie Calendar</small>
+    </footer>
+</body>
+</html>

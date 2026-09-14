@@ -1,0 +1,64 @@
+.statusMessage:empty {
+    margin: 0;
+}
+
+.statusError {
+    color: var(--pico-del-color);
+}
+
+.productInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.productThumbnail {
+    flex: none;
+    width: 3rem;
+    height: 3rem;
+    object-fit: contain;
+    border-radius: var(--pico-border-radius);
+}
+
+.productTable button {
+    margin: 0;
+    padding: 0.25rem 0.75rem;
+}
+
+/* Keep numbers next to their units ("0.3 g") and headers on one line; product names can wrap. */
+.productTable th,
+.productTable td:not(:first-child) {
+    white-space: nowrap;
+}
+
+/* Keeps the absolutely positioned .visuallyHidden header text inside the table's scroll
+   container; otherwise it sits past the right edge and makes the whole page scroll sideways. */
+.productTable th {
+    position: relative;
+}
+
+.visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.storageBadge {
+    display: inline-block;
+    padding: 0 0.5rem;
+    border: 1px solid currentColor;
+    border-radius: var(--pico-border-radius);
+    font-size: 0.875em;
+    white-space: nowrap;
+}
+
+.storageSaved {
+    color: var(--pico-ins-color);
+}
+
+.storageNotSaved {
+    color: var(--pico-del-color);
+}

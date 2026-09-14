@@ -1,0 +1,11 @@
+[build]
+  command = "python3 scripts/build_frontend.py"
+  publish = "dist/"
+
+[context.production]
+  environment = {
+    API_BASE_URL = "https://your-backend-url.com"
+  }
+
+# Replace https://your-backend-url.com with your actual deployed backend URL
+# Example: https://calorie-calendar.netlify.app
