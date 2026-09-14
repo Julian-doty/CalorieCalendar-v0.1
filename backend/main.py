@@ -124,6 +124,9 @@ app.add_middleware(
 def health():
     return {"status": "healthy"}
 
+@app.get("/")
+    def read_root():
+        return {"message": "Calorie Calendar Backend is running!"}
 
 def get_http_client(request: Request) -> httpx.AsyncClient:
     return request.app.state.http_client
