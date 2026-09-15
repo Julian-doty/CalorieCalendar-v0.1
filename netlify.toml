@@ -2,8 +2,6 @@
   command = "python3 scripts/build_frontend.py"
   publish = "dist"
 
-# The backend's URL. Replace it with the Render URL (like https://your-service.onrender.com) once the backend
-# is deployed. backend.invalid is a reserved name that never resolves, so until then the page can't send
-# anything anywhere.
+# The backend on Render. Its ALLOWED_ORIGINS setting must include this site's URL (https://calocale.netlify.app).
 [context.production.environment]
-  API_BASE_URL = "https://backend.invalid"
+  API_BASE_URL = "https://caloriecalendar-v0-1-1.onrender.com"
