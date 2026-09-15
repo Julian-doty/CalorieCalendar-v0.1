@@ -1,12 +1,9 @@
 [build]
-  base = "."
   command = "python3 scripts/build_frontend.py"
-  publish = "dist/"
+  publish = "dist"
 
-[context.production]
-  environment = {
-    API_BASE_URL = "https://your-backend-url.com"
-  }
-
-# Replace https://your-backend-url.com with your actual deployed backend URL
-# Example: https://calorie-calendar.netlify.app
+# The backend's URL. Replace it with the Render URL (like https://your-service.onrender.com) once the backend
+# is deployed. backend.invalid is a reserved name that never resolves, so until then the page can't send
+# anything anywhere.
+[context.production.environment]
+  API_BASE_URL = "https://backend.invalid"
