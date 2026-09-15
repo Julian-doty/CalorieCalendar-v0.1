@@ -1,4 +1,6 @@
 [build]
+  # Build from the repository root. This overrides the Base directory field in Netlify's site settings.
+  base = "."
   command = "python3 scripts/build_frontend.py"
   publish = "dist"
 
