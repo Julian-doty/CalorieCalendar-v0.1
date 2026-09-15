@@ -1,5 +1,5 @@
 [build]
-  base = "https://github.com/Julian-doty/CalorieCalendar-v0.1/blob/main/backend/main.py"
+  base = "."
   command = "python3 scripts/build_frontend.py"
   publish = "dist/"
 
