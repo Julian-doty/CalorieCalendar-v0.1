@@ -1,0 +1,15 @@
+# Local settings and secrets
+backend/.env
+
+# Local data and generated files
+*.db
+__pycache__/
+*.pyc
+.venv/
+venv/
+dist/
+node_modules/
+
+# Project links created by the Netlify and Vercel CLIs
+.netlify/
+.vercel/
